@@ -10,7 +10,7 @@ class SDUIGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<dynamic> children = uiJson['children'] ?? [];
-    final Map<String, dynamic> style = uiJson['style'] ?? {};
+    final style = Map<String, dynamic>.from(uiJson['style'] as Map? ?? {});
     final double gap = (style['gap'] ?? 0).toDouble();
 
     return GridView.builder(
@@ -25,7 +25,7 @@ class SDUIGrid extends StatelessWidget {
       ),
       itemCount: children.length,
       itemBuilder: (context, index) {
-        return SDUIParser(uiJson: children[index]);
+        return SDUIParser(uiJson: Map<String, dynamic>.from(children[index] as Map));
       },
     );
   }

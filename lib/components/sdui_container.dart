@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sdui_project/sdui/sdui_parser.dart';
+
 import '../utils/style_parser.dart';
 
 class SDUIContainer extends StatelessWidget {
@@ -9,26 +10,23 @@ class SDUIContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> style = uiJson['style'] ?? {};
+    final style = Map<String, dynamic>.from(uiJson['style'] as Map? ?? {});
     final List<dynamic> children = uiJson['children'] ?? [];
 
-    // 1. Apply Margin (Outer Spacing)
     return Padding(
       padding: StyleParser.parseInsets(style, 'margin'),
       child: Container(
-        // 2. Apply Decoration (Color, Radius, Shadow)
         decoration: StyleParser.parseDecoration(style),
-
-        // 3. Apply Padding (Inner Spacing)
         padding: StyleParser.parseInsets(style, 'padding'),
 
-        // 4. Render Children (Depending on layout type, we might column them)
-        // If there's only one child, return it. If multiple, default to Column.
+        // --- FIX IS HERE ---
         child: children.length == 1
-            ? SDUIParser(uiJson: children[0])
+            ? SDUIParser(uiJson: Map<String, dynamic>.from(children[0] as Map))
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: children.map((item) => SDUIParser(uiJson: item)).toList(),
+                children: children
+                    .map((c) => SDUIParser(uiJson: Map<String, dynamic>.from(c as Map)))
+                    .toList(),
               ),
       ),
     );

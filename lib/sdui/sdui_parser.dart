@@ -1,6 +1,7 @@
-// lib/sdui/sdui_parser.dart
 import 'package:flutter/material.dart';
 import 'component_registry.dart';
+import 'sdui_action.dart';
+import 'action_delegate.dart';
 
 class SDUIParser extends StatelessWidget {
   final Map<String, dynamic> uiJson;
@@ -9,35 +10,54 @@ class SDUIParser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Safety Check
+    // 1. Safety Check: If JSON is empty, render nothing.
     if (uiJson.isEmpty) return const SizedBox.shrink();
 
-    // 2. Extract Data
+    // 2. Extract the Component Type
     final String type = uiJson['type'] ?? 'UNKNOWN';
-    final Map<String, dynamic>? action = uiJson['action'];
 
+    // 3. Look up the Widget in the Registry
+    // We pass the ENTIRE json node so the component can access 'props', 'style', and 'children'
+    final widgetBuilder = ComponentRegistry.getWidgetBuilder(type);
 
-    // 4. Get the Native Widget from Registry
-    final builder = ComponentRegistry.getWidgetBuilder(type);
-
-    if (builder == null) {
-      // 5. Version Safety: Handle unknown components gracefully
+    // 4. Handle Unknown Components (Version Safety)
+    if (widgetBuilder == null) {
       return Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text("⚠️ Unknown Component: $type", style: const TextStyle(color: Colors.red)),
+        child: Container(
+          color: Colors.red.withOpacity(0.1),
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            "⚠️ Unknown Component: $type",
+            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+        ),
       );
     }
 
-    Widget nativeWidget = builder(uiJson);
+    // 5. Build the Native Widget
+    Widget nativeWidget = widgetBuilder(uiJson);
 
-    // 6. Wrap in Action Handler (if action exists)
-    if (action != null) {
-      return GestureDetector(
-        onTap: () {
-          print("Action Tapped: ${action['type']}"); // We will implement this in Part 4
-        },
-        child: nativeWidget,
-      );
+    // 6. Action Layer (Interaction)
+    // If the JSON contains an "action" block, we wrap the widget in a GestureDetector.
+    if (uiJson.containsKey('action')) {
+      try {
+        final action = SDUIAction.fromJson(Map<String, dynamic>.from(uiJson['action'] as Map));
+
+        return GestureDetector(
+          // HitTestBehavior.opaque is CRITICAL. 
+          // It allows clicking on empty space inside Containers/Rows.
+          behavior: HitTestBehavior.opaque, 
+          onTap: () {
+            SDUIActionDelegate.handleAction(context, action);
+          },
+          child: nativeWidget,
+        );
+      } catch (e) {
+        debugPrint("Error parsing action for $type: $e");
+        // If action parsing fails, just return the widget non-clickable
+        return nativeWidget;
+      }
     }
 
     return nativeWidget;
