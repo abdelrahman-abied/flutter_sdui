@@ -14,14 +14,8 @@ class SDUIParser extends StatelessWidget {
 
     // 2. Extract Data
     final String type = uiJson['type'] ?? 'UNKNOWN';
-    final Map<String, dynamic> props = uiJson['props'] ?? {};
     final Map<String, dynamic>? action = uiJson['action'];
-    final List<dynamic> rawChildren = uiJson['children'] ?? [];
 
-    // 3. Recursively Parse Children
-    List<Widget> widgetChildren = rawChildren.map((childJson) {
-      return SDUIParser(uiJson: childJson);
-    }).toList();
 
     // 4. Get the Native Widget from Registry
     final builder = ComponentRegistry.getWidgetBuilder(type);
@@ -34,7 +28,7 @@ class SDUIParser extends StatelessWidget {
       );
     }
 
-    Widget nativeWidget = builder(props, widgetChildren);
+    Widget nativeWidget = builder(uiJson);
 
     // 6. Wrap in Action Handler (if action exists)
     if (action != null) {
