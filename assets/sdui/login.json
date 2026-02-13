@@ -1,0 +1,62 @@
+{
+  "screen_title": "Secure Login",
+  "ui_tree": {
+    "type": "VERTICAL_STACK",
+    "children": [
+      {
+        "type": "CONTAINER",
+        "style": { "padding": 32 },
+        "children": [
+          {
+            "type": "TEXT",
+            "props": { "text": "Welcome Back" },
+            "style": { "font_size": 28, "font_weight": "bold" }
+          }
+        ]
+      },
+      {
+        "type": "INPUT_TEXT",
+        "id": "username",
+        "props": {
+          "label": "Email Address",
+          "placeholder": "you@company.com",
+          "keyboard_type": "email",
+          "validators": {
+            "required": true,
+            "regex": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"
+          }
+        }
+      },
+      {
+        "type": "INPUT_TEXT",
+        "id": "password",
+        "props": {
+          "label": "Password",
+          "is_secure": true,
+          "validators": {
+            "required": true
+          }
+        }
+      },
+      {
+        "type": "CONTAINER",
+        "style": { "padding": 16, "margin_top": 20 },
+        "children": [
+          {
+            "type": "BUTTON_PRIMARY",
+            "props": { "label": "Sign In" },
+            "action": {
+              "type": "form_submit",
+              "url": "https://api.myapp.com/auth/login",
+              "data": {
+                "device_id": "1234-static-id"
+              },
+              "success_url": "/home",
+              "success_message": "Login successful"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

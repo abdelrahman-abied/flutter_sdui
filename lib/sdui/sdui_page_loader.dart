@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'sdui_parser.dart';
 
@@ -24,12 +27,14 @@ class _SDUIGenericPageState extends State<SDUIGenericPage> {
   }
 
   Future<void> _fetchPage() async {
-    // 1. Simulate Network Delay
-    await Future.delayed(const Duration(milliseconds: 800));
+    // 1. Simulate Network Delay (skip for login - file load is fast)
+    if (widget.endpoint != 'login') {
+      await Future.delayed(const Duration(milliseconds: 800));
+    }
 
     try {
-      // 2. Fetch JSON (Mocking the API based on the endpoint)
-      final json = MockNetworkService.getJsonForEndpoint(widget.endpoint);
+      // 2. Fetch JSON (from assets or mock API)
+      final json = await MockNetworkService.getJsonForEndpoint(widget.endpoint);
 
       if (mounted) {
         setState(() {
@@ -74,7 +79,13 @@ class _SDUIGenericPageState extends State<SDUIGenericPage> {
 
 // --- MOCK NETWORK SERVICE ---
 class MockNetworkService {
-  static Map<String, dynamic> getJsonForEndpoint(String endpoint) {
+  static Future<Map<String, dynamic>> getJsonForEndpoint(String endpoint) async {
+    // Login: Load from assets file
+    if (endpoint == 'login') {
+      final jsonStr = await rootBundle.loadString('assets/sdui/login.json');
+      return Map<String, dynamic>.from(jsonDecode(jsonStr));
+    }
+
     // Scenario A: Product Details
     if (endpoint.startsWith('product')) {
       return {

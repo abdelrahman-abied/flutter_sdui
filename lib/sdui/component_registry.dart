@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sdui_project/sdui/sdui_input.dart';
 import 'package:sdui_project/sdui/sdui_parser.dart';
 
 import '../components/sdui_components.dart';
@@ -37,15 +38,18 @@ class ComponentRegistry {
       final color = StyleParser.parseColor(style['background_color'] ?? props['color']) ?? Colors.blue;
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(8),
+        child: Material(
+          color: color,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            alignment: Alignment.center,
+            child: Text(
+              label.toString(),
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            ),
           ),
-          alignment: Alignment.center,
-          child: Text(label.toString(), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
         ),
       );
     },
@@ -65,6 +69,10 @@ class ComponentRegistry {
         ),
       );
     },
+    'INPUT_TEXT': (node) => SDUITextInput(
+      id: node['id']?.toString() ?? 'unknown_id',
+      props: Map<String, dynamic>.from(node['props'] as Map? ?? {}),
+    ),
   };
 
   static SDUIWidgetBuilder? getWidgetBuilder(String type) {

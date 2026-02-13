@@ -45,10 +45,9 @@ class SDUIParser extends StatelessWidget {
         final action = SDUIAction.fromJson(Map<String, dynamic>.from(uiJson['action'] as Map));
 
         return GestureDetector(
-          // HitTestBehavior.opaque is CRITICAL. 
-          // It allows clicking on empty space inside Containers/Rows.
-          behavior: HitTestBehavior.opaque, 
+          behavior: HitTestBehavior.opaque,
           onTap: () {
+            debugPrint("[SDUIParser] Action tap: ${action.type}");
             SDUIActionDelegate.handleAction(context, action);
           },
           child: nativeWidget,
