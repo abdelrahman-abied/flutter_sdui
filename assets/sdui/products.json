@@ -1,0 +1,34 @@
+{
+    "screen_title": "Infinite Products",
+    "ui_tree": {
+      "type": "VERTICAL_STACK",
+      "children": [
+        {
+          "type": "HEADER",
+          "props": { "title": "New Arrivals", "icon_url": "..." }
+        },
+        
+        {
+          "type": "LAZY_LIST",
+          "props": {
+            "next_url": "/api/products?page=2",
+            "has_more": true
+          },
+          "children": [
+            {
+              "type": "PRODUCT_CARD",
+              "props": { "name": "Initial Item A", "price": "$100" }
+            },
+            {
+              "type": "PRODUCT_CARD",
+              "props": { "name": "Initial Item B", "price": "$200" }
+            },
+            {
+              "type": "PRODUCT_CARD",
+              "props": { "name": "Initial Item C", "price": "$300" }
+            }
+          ]
+        }
+      ]
+    }
+  }

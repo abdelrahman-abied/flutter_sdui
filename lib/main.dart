@@ -29,7 +29,14 @@ class MyApp extends StatelessWidget {
           );
         }
 
-        // 2. Handle Products (e.g., /product/123)
+        // 2. Products List
+        if (uri.path == '/products') {
+          return MaterialPageRoute(
+            builder: (_) => const SDUIGenericPage(endpoint: "products"),
+          );
+        }
+
+        // 3. Handle Product Details (e.g., /product/123)
         if (uri.pathSegments.isNotEmpty && uri.pathSegments[0] == 'product') {
           final String productId = uri.pathSegments.length > 1 ? uri.pathSegments[1] : '0';
           return MaterialPageRoute(
@@ -40,7 +47,7 @@ class MyApp extends StatelessWidget {
           );
         }
 
-        // 3. Home Page
+        // 4. Home Page
         return MaterialPageRoute(
           builder: (_) => const SDUIGenericPage(endpoint: "home"),
         );

@@ -58,7 +58,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/sdui/
+    - assets/sdui/login.json
+    - assets/sdui/products.json
+    - assets/sdui/product_details.json
+    - assets/sdui/home.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

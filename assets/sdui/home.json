@@ -1,0 +1,36 @@
+{
+  "screen_title": "SDUI Home",
+  "ui_tree": {
+    "type": "VERTICAL_STACK",
+    "children": [
+      {
+        "type": "HEADER",
+        "props": {"title": "Welcome User", "icon_url": "https://img.icons8.com/color/96/user.png"}
+      },
+      {
+        "type": "CONTAINER",
+        "style": {"padding": 16, "background_color": "#E3F2FD", "margin": 16, "corner_radius": 12},
+        "children": [
+          {
+            "type": "TEXT",
+            "props": {"text": "Show Products"},
+            "action": {
+              "type": "navigate",
+              "url": "/products"
+            }
+          }
+        ]
+      },
+      {
+        "type": "BUTTON_PRIMARY",
+        "props": {"label": "Go to Product 123"},
+        "style": {"background_color": "#2196F3"},
+        "action": {
+          "type": "navigate",
+          "url": "/product/123",
+          "data": {"referral": "home_page"}
+        }
+      }
+    ]
+  }
+}

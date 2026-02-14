@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sdui_project/components/sdui_lazy_list.dart';
 import 'package:sdui_project/sdui/sdui_input.dart';
 import 'package:sdui_project/sdui/sdui_parser.dart';
 
@@ -73,6 +74,7 @@ class ComponentRegistry {
       id: node['id']?.toString() ?? 'unknown_id',
       props: Map<String, dynamic>.from(node['props'] as Map? ?? {}),
     ),
+    'LAZY_LIST': (node) => SDUILazyList(uiJson: node),
   };
 
   static SDUIWidgetBuilder? getWidgetBuilder(String type) {

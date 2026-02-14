@@ -79,92 +79,45 @@ class _SDUIGenericPageState extends State<SDUIGenericPage> {
 
 // --- MOCK NETWORK SERVICE ---
 class MockNetworkService {
+  static const String _assetsBase = 'assets/sdui';
+
+  /// Endpoint → asset file mapping. Add new screens here.
+  static final Map<String, String> _endpointToAsset = {
+    'login': '$_assetsBase/login.json',
+    'products': '$_assetsBase/products.json',
+    'home': '$_assetsBase/home.json',
+  };
+
+  /// Optional cache to avoid re-reading assets on repeated navigation.
+  static final Map<String, Map<String, dynamic>> _cache = {};
+
+  /// Loads and parses JSON from an asset path. Supports optional caching.
+  static Future<Map<String, dynamic>> _loadJsonFromAsset(
+    String path, {
+    bool useCache = true,
+  }) async {
+    if (useCache && _cache.containsKey(path)) {
+      return Map<String, dynamic>.from(_cache[path]!);
+    }
+    final jsonStr = await rootBundle.loadString(path);
+    final data = Map<String, dynamic>.from(jsonDecode(jsonStr) as Map);
+    if (useCache) _cache[path] = data;
+    return data;
+  }
+
   static Future<Map<String, dynamic>> getJsonForEndpoint(String endpoint) async {
-    // Login: Load from assets file
-    if (endpoint == 'login') {
-      final jsonStr = await rootBundle.loadString('assets/sdui/login.json');
-      return Map<String, dynamic>.from(jsonDecode(jsonStr));
+    // Direct match
+    final assetPath = _endpointToAsset[endpoint];
+    if (assetPath != null) {
+      return _loadJsonFromAsset(assetPath);
     }
 
-    // Scenario A: Product Details
+    // Dynamic: product/123, product/promo, etc.
     if (endpoint.startsWith('product')) {
-      return {
-        "screen_title": "Product Details",
-        "ui_tree": {
-          "type": "VERTICAL_STACK",
-          "children": [
-            // Example 1: Simple Navigation
-            {
-              "type": "BANNER_CARD",
-              "props": {
-                "image_url":
-                    "https://graphicsfamily.com/wp-content/uploads/edd/2021/07/Professional-E-Commerce-Shoes-Banner-Design-2048x1152.jpg",
-              },
-              "action": {
-                "type": "navigate",
-                "url": "/product/promo",
-                "data": {"id": "promo_99", "referral": "home_banner"},
-              },
-            },
-
-            // Example 2: Network Request (Add to Cart)
-            {
-              "type": "BUTTON_PRIMARY",
-              "props": {"label": "Add to Cart - \$20.00"},
-              "style": {"background_color": "#4CAF50"},
-              "action": {
-                "type": "network_request",
-                "url": "https://api.myapp.com/cart/add",
-                "data": {"sku": "ITEM_001", "qty": 1},
-              },
-            },
-
-            // Example 3: Toast Message
-            {
-              "type": "TEXT",
-              "props": {"text": "Need Help? Tap here."},
-              "action": {
-                "type": "show_toast",
-                "data": {"message": "Opening Support Chat...", "is_error": false},
-              },
-            },
-          ],
-        },
-      };
+      return _loadJsonFromAsset('$_assetsBase/product_details.json');
     }
 
-    // Scenario B: Home Page (Default)
-    return {
-      "screen_title": "SDUI Home",
-      "ui_tree": {
-        "type": "VERTICAL_STACK",
-        "children": [
-          {
-            "type": "HEADER",
-            "props": {"title": "Welcome User", "icon_url": "https://img.icons8.com/color/96/user.png"},
-          },
-          {
-            "type": "CONTAINER",
-            "style": {"padding": 16, "background_color": "#E3F2FD", "margin": 16, "corner_radius": 12},
-            "children": [
-              {
-                "type": "TEXT",
-                "props": {"text": "Click below to test navigation"},
-              },
-            ],
-          },
-          {
-            "type": "BUTTON_PRIMARY",
-            "props": {"label": "Go to Product 123"},
-            "style": {"background_color": "#2196F3"},
-            "action": {
-              "type": "navigate",
-              "url": "/product/123", // <--- This triggers the deep link
-              "data": {"referral": "home_page"},
-            },
-          },
-        ],
-      },
-    };
+    // Default: home
+    return _loadJsonFromAsset('$_assetsBase/home.json');
   }
 }

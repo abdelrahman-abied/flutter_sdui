@@ -1,0 +1,37 @@
+{
+  "screen_title": "Product Details",
+  "ui_tree": {
+    "type": "VERTICAL_STACK",
+    "children": [
+      {
+        "type": "BANNER_CARD",
+        "props": {
+          "image_url": "https://graphicsfamily.com/wp-content/uploads/edd/2021/07/Professional-E-Commerce-Shoes-Banner-Design-2048x1152.jpg"
+        },
+        "action": {
+          "type": "navigate",
+          "url": "/product/promo",
+          "data": {"id": "promo_99", "referral": "home_banner"}
+        }
+      },
+      {
+        "type": "BUTTON_PRIMARY",
+        "props": {"label": "Add to Cart - $20.00"},
+        "style": {"background_color": "#4CAF50"},
+        "action": {
+          "type": "network_request",
+          "url": "https://api.myapp.com/cart/add",
+          "data": {"sku": "ITEM_001", "qty": 1}
+        }
+      },
+      {
+        "type": "TEXT",
+        "props": {"text": "Need Help? Tap here."},
+        "action": {
+          "type": "show_toast",
+          "data": {"message": "Opening Support Chat...", "is_error": false}
+        }
+      }
+    ]
+  }
+}
